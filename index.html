@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StayFoodish - AI-Powered Nutrition & Zero-Waste Food Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,9 +15,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-weight: 400;
             line-height: 1.6;
-            color: #333;
+            color: #1E1E1E;
+            background-color: #FFF9F2;
             overflow-x: hidden;
         }
 
@@ -26,15 +31,15 @@
 
         /* Logo */
         .logo {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 20px;
-            z-index: 1000;
-            width: 160px;
-            height: 160px;
+            z-index: 10;
+            width: 80px;
+            height: 80px;
             background: transparent;
             border-radius: 10px;
-            padding: 10px;
+            padding: 5px;
         }
 
         .logo svg {
@@ -50,7 +55,7 @@
 
         /* Header */
         header {
-            background: linear-gradient(135deg, #810805 0%, #55925D 100%);
+            background: linear-gradient(135deg, #2EC4B6 0%, #1AA89B 100%);
             color: white;
             padding: 100px 20px;
             text-align: center;
@@ -70,9 +75,10 @@
         }
 
         header h1 {
+            font-family: 'Baloo 2', cursive;
             font-size: 3.5em;
             margin-bottom: 20px;
-            font-weight: 700;
+            font-weight: 800;
             position: relative;
             z-index: 1;
         }
@@ -98,6 +104,28 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo {
+            position: absolute;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-logo.visible {
+            opacity: 1;
+        }
+
+        .nav-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         nav ul {
@@ -114,13 +142,13 @@
 
         nav ul li a {
             text-decoration: none;
-            color: #810805;
+            color: #2EC4B6;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         nav ul li a:hover {
-            color: #55925D;
+            color: #1AA89B;
         }
 
         /* Sections */
@@ -133,10 +161,12 @@
         }
 
         h2 {
+            font-family: 'Baloo 2', cursive;
             font-size: 2.5em;
+            font-weight: 700;
             margin-bottom: 40px;
             text-align: center;
-            color: #810805;
+            color: #1E1E1E;
         }
 
         /* Problem Section */
@@ -157,18 +187,21 @@
 
         .problem-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
+            border-top: 3px solid #EF4444;
         }
 
         .problem-card h3 {
-            color: #55925D;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: #EF4444;
             font-size: 1.8em;
             margin-bottom: 20px;
         }
 
         .problem-card p {
             font-size: 1.1em;
-            color: #666;
+            color: #6B7280;
         }
 
         /* Solution Section */
@@ -180,7 +213,7 @@
         }
 
         .solution-card {
-            background: linear-gradient(135deg, #810805 0%, #55925D 100%);
+            background: linear-gradient(135deg, #2EC4B6 0%, #1AA89B 100%);
             color: white;
             padding: 40px;
             border-radius: 15px;
@@ -193,6 +226,8 @@
         }
 
         .solution-card h3 {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
             font-size: 1.8em;
             margin-bottom: 20px;
         }
@@ -211,7 +246,8 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s;
+            transition: transform 0.3s, border-top 0.3s;
+            border-top: 3px solid transparent;
         }
 
         .feature:hover {
@@ -224,13 +260,27 @@
         }
 
         .feature h3 {
-            color: #810805;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: #2EC4B6;
             font-size: 1.3em;
             margin-bottom: 15px;
         }
 
+        .feature:nth-child(even) h3 {
+            color: #EF4444;
+        }
+
+        .feature:hover {
+            border-top: 3px solid #2EC4B6;
+        }
+
+        .feature:nth-child(even):hover {
+            border-top-color: #EF4444;
+        }
+
         .feature p {
-            color: #666;
+            color: #6B7280;
         }
 
         /* Why Now */
@@ -244,23 +294,31 @@
             padding: 25px 30px;
             margin-bottom: 20px;
             border-radius: 10px;
-            border-left: 5px solid #55925D;
+            border-left: 5px solid #2EC4B6;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
         }
 
+        .why-item:nth-child(even) {
+            border-left-color: #EF4444;
+        }
+
+        .why-item:nth-child(even) .why-number {
+            color: #EF4444;
+        }
+
         .why-number {
             font-size: 2em;
             font-weight: bold;
-            color: #810805;
+            color: #2EC4B6;
             margin-right: 20px;
             min-width: 40px;
         }
 
         /* Footer */
         footer {
-            background: #333;
+            background: #1E1E1E;
             color: white;
             text-align: center;
             padding: 40px 20px;
@@ -273,8 +331,8 @@
         /* Responsive */
         @media (max-width: 768px) {
             .logo {
-                width: 120px;
-                height: 120px;
+                width: 60px;
+                height: 60px;
                 top: 15px;
                 left: 15px;
             }
@@ -314,6 +372,9 @@
     </header>
 
     <nav>
+        <div class="nav-logo">
+            <img src="logo.png" alt="StayFoodish Logo">
+        </div>
         <ul>
             <li><a href="#problem">The Problem</a></li>
             <li><a href="#solution">The Solution</a></li>
@@ -433,6 +494,19 @@
                     });
                 }
             });
+        });
+
+        // Show/hide logo in navbar based on scroll
+        const navLogo = document.querySelector('.nav-logo');
+        const header = document.querySelector('header');
+
+        window.addEventListener('scroll', () => {
+            const headerBottom = header.offsetTop + header.offsetHeight;
+            if (window.scrollY > headerBottom) {
+                navLogo.classList.add('visible');
+            } else {
+                navLogo.classList.remove('visible');
+            }
         });
 
         // Add scroll animation
