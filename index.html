@@ -3,533 +3,1465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayFoodish - AI-Powered Nutrition & Zero-Waste Food Management</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>StayFoodish - Smart Food Inventory</title>
     <style>
+        :root {
+            --ink: #17211f;
+            --muted: #60706b;
+            --paper: #fffaf3;
+            --panel: #ffffff;
+            --line: #dfe7df;
+            --mint: #2ec4b6;
+            --mint-dark: #167f78;
+            --tomato: #ef4444;
+            --orange: #f59e0b;
+            --leaf: #4f8f38;
+            --plum: #6d5bd0;
+            --shadow: 0 18px 45px rgba(23, 33, 31, 0.1);
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #1E1E1E;
-            background-color: #FFF9F2;
-            overflow-x: hidden;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                linear-gradient(180deg, rgba(46, 196, 182, 0.08), rgba(255, 250, 243, 0.72) 330px),
+                var(--paper);
         }
 
-        .container {
-            max-width: 1200px;
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 0 20px;
         }
 
-        /* Logo */
-        .logo {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            width: 80px;
-            height: 80px;
-            background: transparent;
-            border-radius: 10px;
-            padding: 5px;
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            border-bottom: 1px solid rgba(223, 231, 223, 0.9);
+            background: rgba(255, 250, 243, 0.92);
+            backdrop-filter: blur(16px);
         }
 
-        .logo svg {
-            width: 100%;
-            height: 100%;
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 78px;
         }
 
-        .logo img {
-            width: 100%;
-            height: 100%;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .brand img {
+            width: 52px;
+            height: 52px;
             object-fit: contain;
         }
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #2EC4B6 0%, #1AA89B 100%);
-            color: white;
-            padding: 100px 20px;
-            text-align: center;
-            position: relative;
+        .brand strong {
+            display: block;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .brand span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav a,
+        .ghost-button,
+        .primary-button,
+        .icon-button {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+        }
+
+        .nav a {
+            color: var(--muted);
+            font-size: 0.93rem;
+            font-weight: 700;
+            padding: 10px 12px;
+        }
+
+        .nav a:hover,
+        .ghost-button:hover,
+        .icon-button:hover {
+            transform: translateY(-1px);
+            border-color: var(--line);
+            background: #fff;
+        }
+
+        .primary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 16px;
+            border-color: var(--mint-dark);
+            background: var(--mint-dark);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-1px);
+            background: #116a65;
+        }
+
+        .ghost-button,
+        .icon-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 0 12px;
+            border-color: var(--line);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--ink);
+            font-weight: 800;
+        }
+
+        .icon-button {
+            width: 38px;
+            padding: 0;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+            gap: 28px;
+            align-items: stretch;
+            padding: 34px 0 26px;
+        }
+
+        .hero-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 410px;
+            padding: 34px 0;
+        }
+
+        .eyebrow {
+            color: var(--mint-dark);
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 780px;
+            margin-top: 14px;
+            font-size: clamp(2.4rem, 5vw, 5.4rem);
+            line-height: 0.95;
+            letter-spacing: 0;
+        }
+
+        .lead {
+            max-width: 660px;
+            margin-top: 22px;
+            color: #41524d;
+            font-size: 1.12rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+        }
+
+        .hero-note {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .phone {
+            justify-self: center;
+            width: min(390px, 100%);
+            border: 1px solid rgba(23, 33, 31, 0.12);
+            border-radius: 30px;
+            background: #101816;
+            box-shadow: var(--shadow);
+            padding: 12px;
+        }
+
+        .phone-screen {
+            min-height: 560px;
+            border-radius: 22px;
+            overflow: hidden;
+            background: #fbfff8;
+        }
+
+        .phone-hero {
+            min-height: 210px;
+            padding: 18px;
+            color: #fff;
+            background:
+                linear-gradient(180deg, rgba(23, 33, 31, 0.2), rgba(23, 33, 31, 0.66)),
+                url("logo1.png") center / cover;
+        }
+
+        .phone-hero strong {
+            display: block;
+            width: fit-content;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 0.78rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .phone-hero h2 {
+            max-width: 250px;
+            margin-top: 78px;
+            font-size: 1.8rem;
+            line-height: 1.05;
+        }
+
+        .phone-body {
+            padding: 16px;
+        }
+
+        .mini-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .mini-stat {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            padding: 10px;
+        }
+
+        .mini-stat b {
+            display: block;
+            font-size: 1.2rem;
+        }
+
+        .mini-stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.72rem;
+        }
+
+        .next-meal {
+            margin-top: 14px;
+            border-radius: 8px;
+            background: #effaf5;
+            padding: 14px;
+        }
+
+        .next-meal small {
+            color: var(--leaf);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .next-meal h3 {
+            margin: 5px 0;
+            font-size: 1.15rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 360px;
+            gap: 18px;
+            align-items: start;
+            padding: 20px 0 68px;
+        }
+
+        .toolbar,
+        .panel,
+        .insight-strip {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 10px 24px rgba(23, 33, 31, 0.05);
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1.1fr 0.75fr 0.9fr repeat(4, 0.7fr) auto;
+            gap: 10px;
+            padding: 12px;
+        }
+
+        label {
+            display: grid;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            padding: 0 12px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--mint);
+            box-shadow: 0 0 0 3px rgba(46, 196, 182, 0.16);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .section-title h2 {
+            font-size: 1.25rem;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .dashboard {
+            display: grid;
+            gap: 18px;
+        }
+
+        .insight-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            overflow: hidden;
+            background: var(--line);
+        }
+
+        .insight {
+            min-height: 112px;
+            background: #fff;
+            padding: 18px;
+        }
+
+        .insight span {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .insight b {
+            display: block;
+            margin-top: 8px;
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .insight small {
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+        }
+
+        .panel {
+            padding: 18px;
+        }
+
+        .inventory-grid,
+        .recipe-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .inventory-item,
+        .recipe-card,
+        .plan-item,
+        .shopping-item {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .inventory-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            font-weight: 900;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--mint);
+            flex: 0 0 auto;
+        }
+
+        .dot.produce {
+            background: var(--leaf);
+        }
+
+        .dot.protein {
+            background: var(--tomato);
+        }
+
+        .dot.dairy {
+            background: var(--plum);
+        }
+
+        .dot.pantry {
+            background: var(--orange);
+        }
+
+        .meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .nutrition-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(72px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .nutrition-chip {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fbfdf8;
+            padding: 8px;
+        }
+
+        .nutrition-chip b {
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .nutrition-chip span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            border-radius: 999px;
+            background: #f3f6f0;
+            color: var(--muted);
+            padding: 0 9px;
+            font-size: 0.76rem;
+            font-weight: 800;
+        }
+
+        .pill.alert {
+            background: rgba(239, 68, 68, 0.1);
+            color: #a92727;
+        }
+
+        .pill.good {
+            background: rgba(79, 143, 56, 0.12);
+            color: #356827;
+        }
+
+        .recipe-card {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .recipe-card header {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .recipe-card h3 {
+            font-size: 1.02rem;
+        }
+
+        .recipe-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .match-meter {
+            height: 8px;
+            border-radius: 999px;
+            background: #edf1ea;
             overflow: hidden;
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x bottom;
-            opacity: 0.3;
+        .match-meter span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--mint), var(--leaf));
         }
 
-        header h1 {
-            font-family: 'Baloo 2', cursive;
-            font-size: 3.5em;
-            margin-bottom: 20px;
-            font-weight: 800;
-            position: relative;
-            z-index: 1;
-        }
-
-        header p {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Navigation */
-        nav {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .side-stack {
+            display: grid;
+            gap: 18px;
             position: sticky;
-            top: 0;
-            z-index: 100;
+            top: 96px;
+        }
+
+        .plan-list,
+        .shopping-list {
+            display: grid;
+            gap: 9px;
+        }
+
+        .plan-item,
+        .shopping-item {
+            padding: 12px;
+        }
+
+        .plan-item small,
+        .shopping-item small {
+            color: var(--muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .plan-item strong,
+        .shopping-item strong {
+            display: block;
+            margin-top: 3px;
+        }
+
+        .shopping-item {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
-        .nav-logo {
-            position: absolute;
-            left: 20px;
-            width: 50px;
-            height: 50px;
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--mint-dark);
+            border-radius: 5px;
+            flex: 0 0 auto;
+        }
+
+        .story {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            padding: 0 0 72px;
+        }
+
+        .story-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            padding: 22px;
+        }
+
+        .story-card h2 {
+            margin-bottom: 12px;
+            font-size: 1.18rem;
+        }
+
+        .story-card p,
+        .story-card li {
+            color: var(--muted);
+        }
+
+        .story-card ul {
+            display: grid;
+            gap: 8px;
+            margin-left: 18px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 30;
+            max-width: 340px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: var(--shadow);
+            padding: 14px 16px;
+            transform: translateY(22px);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
-        .nav-logo.visible {
+        .toast.visible {
+            transform: translateY(0);
             opacity: 1;
         }
 
-        .nav-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        footer {
+            border-top: 1px solid var(--line);
+            background: #17211f;
+            color: #e8f2ed;
+            padding: 28px 0;
         }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 20px 0;
-        }
-
-        nav ul li {
-            margin: 0 25px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #2EC4B6;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #1AA89B;
-        }
-
-        /* Sections */
-        section {
-            padding: 80px 20px;
-        }
-
-        section:nth-child(even) {
-            background: #F5F5DC;
-        }
-
-        h2 {
-            font-family: 'Baloo 2', cursive;
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 40px;
-            text-align: center;
-            color: #1E1E1E;
-        }
-
-        /* Problem Section */
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        .problem-card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .problem-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
-            border-top: 3px solid #EF4444;
-        }
-
-        .problem-card h3 {
-            font-family: 'Baloo 2', cursive;
-            font-weight: 700;
-            color: #EF4444;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-
-        .problem-card p {
-            font-size: 1.1em;
-            color: #6B7280;
-        }
-
-        /* Solution Section */
-        .solution-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        .solution-card {
-            background: linear-gradient(135deg, #2EC4B6 0%, #1AA89B 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .solution-card:hover {
-            transform: scale(1.05);
-        }
-
-        .solution-card h3 {
-            font-family: 'Baloo 2', cursive;
-            font-weight: 700;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s, border-top 0.3s;
-            border-top: 3px solid transparent;
-        }
-
-        .feature:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        .feature h3 {
-            font-family: 'Baloo 2', cursive;
-            font-weight: 700;
-            color: #2EC4B6;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-        }
-
-        .feature:nth-child(even) h3 {
-            color: #EF4444;
-        }
-
-        .feature:hover {
-            border-top: 3px solid #2EC4B6;
-        }
-
-        .feature:nth-child(even):hover {
-            border-top-color: #EF4444;
-        }
-
-        .feature p {
-            color: #6B7280;
-        }
-
-        /* Why Now */
-        .why-now-list {
-            max-width: 800px;
-            margin: 40px auto;
-        }
-
-        .why-item {
-            background: white;
-            padding: 25px 30px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            border-left: 5px solid #2EC4B6;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        footer .shell {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .why-item:nth-child(even) {
-            border-left-color: #EF4444;
+        footer span {
+            color: #a9bbb5;
         }
 
-        .why-item:nth-child(even) .why-number {
-            color: #EF4444;
-        }
-
-        .why-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #2EC4B6;
-            margin-right: 20px;
-            min-width: 40px;
-        }
-
-        /* Footer */
-        footer {
-            background: #1E1E1E;
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        footer p {
-            margin-bottom: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .logo {
-                width: 60px;
-                height: 60px;
-                top: 15px;
-                left: 15px;
+        @media (max-width: 960px) {
+            .hero,
+            .main-grid,
+            .story {
+                grid-template-columns: 1fr;
             }
 
-            header h1 {
-                font-size: 2.5em;
+            .hero-copy {
+                min-height: auto;
             }
 
-            header p {
-                font-size: 1.2em;
+            .phone {
+                width: min(430px, 100%);
             }
 
-            h2 {
-                font-size: 2em;
+            .side-stack {
+                position: static;
             }
 
-            nav ul {
+            .toolbar,
+            .insight-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 680px) {
+            .shell {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .topbar-inner {
+                align-items: flex-start;
                 flex-direction: column;
-                align-items: center;
+                padding: 12px 0;
             }
 
-            nav ul li {
-                margin: 10px 0;
+            .brand span {
+                white-space: normal;
+            }
+
+            .nav {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .nav a {
+                padding: 8px 9px;
+            }
+
+            h1 {
+                font-size: 2.55rem;
+            }
+
+            .toolbar,
+            .insight-strip,
+            .nutrition-row,
+            .mini-stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .inventory-item,
+            .recipe-card header {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .primary-button,
+            .ghost-button {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="logo">
-        <img src="logo.png" alt="StayFoodish Logo">
+    <div class="topbar">
+        <div class="shell topbar-inner">
+            <a class="brand" href="#app" aria-label="StayFoodish home">
+                <img src="logo2.png" alt="StayFoodish logo">
+                <span>
+                    <strong>StayFoodish</strong>
+                    <span>AI nutrition and zero-waste pantry</span>
+                </span>
+            </a>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="#inventory">Inventory</a>
+                <a href="#profile">Profile</a>
+                <a href="#recipes">Recipes</a>
+                <a href="#plan">Plan</a>
+                <a href="#about">Idea</a>
+            </nav>
+        </div>
     </div>
 
-    <header>
-        <h1>STAY FOODISH</h1>
-        <p>AI-powered personal nutrition & zero-waste food management</p>
-        <p class="subtitle">Leonardo Andolfi & Rita Randazzo | Antibes, France</p>
-    </header>
-
-    <nav>
-        <div class="nav-logo">
-            <img src="logo.png" alt="StayFoodish Logo">
-        </div>
-        <ul>
-            <li><a href="#problem">The Problem</a></li>
-            <li><a href="#solution">The Solution</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#why-now">Why Now</a></li>
-        </ul>
-    </nav>
-
-    <section id="problem">
-        <div class="container">
-            <h2>The Problem</h2>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <h3>Poor Nutrition Knowledge</h3>
-                    <p>Today we have access to an overwhelming amount of nutritional information, yet the general population's nutrition knowledge remains surprisingly limited.</p>
-                </div>
-                <div class="problem-card">
-                    <h3>Food Waste</h3>
-                    <p>A significant amount of food is wasted — in fact, 20% of all groceries end up being discarded.</p>
+    <main id="app">
+        <section class="shell hero" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="eyebrow">Antibes prototype by Leonardo Andolfi and Rita Randazzo</p>
+                <h1 id="hero-title">Eat what you have before it becomes waste.</h1>
+                <p class="lead">
+                    StayFoodish turns your fridge and pantry into a practical daily plan:
+                    track ingredients, spot what expires soon, generate meals, and create a
+                    smarter grocery list around your nutrition goals.
+                </p>
+                <div class="hero-actions">
+                    <a class="primary-button" href="#inventory">Open the pantry</a>
+                    <button class="ghost-button" id="demoReset" type="button">Reset demo data</button>
+                    <span class="hero-note">Local prototype, no account needed.</span>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <section id="solution">
-        <div class="container">
-            <h2>The Solution</h2>
-            <div class="solution-grid">
-                <div class="solution-card">
-                    <h3>Personalized Nutrition Guidance</h3>
-                    <p>Someone else can guide your diet and your schedule, so you do not need to worry about your fridge or the nutritional characteristics of your food.</p>
+            <aside class="phone" aria-label="StayFoodish mobile preview">
+                <div class="phone-screen">
+                    <div class="phone-hero">
+                        <strong>Tonight</strong>
+                        <h2 id="phoneMeal">Mediterranean bowl with yogurt sauce</h2>
+                    </div>
+                    <div class="phone-body">
+                        <div class="mini-stat-grid">
+                            <div class="mini-stat">
+                                <b id="phoneWaste">4</b>
+                                <span>items to use</span>
+                            </div>
+                            <div class="mini-stat">
+                                <b id="phoneScore">86</b>
+                                <span>nutrition score</span>
+                            </div>
+                            <div class="mini-stat">
+                                <b id="phoneSavings">2.8kg</b>
+                                <span>waste avoided</span>
+                            </div>
+                        </div>
+                        <div class="next-meal">
+                            <small>AI suggestion</small>
+                            <h3 id="phoneSuggestion">Use spinach, tomatoes, rice, and yogurt first.</h3>
+                            <p>Prioritizes expiring food while keeping meals balanced.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="solution-card">
-                    <h3>Zero-Waste Food Management</h3>
-                    <p>It contributes to reducing food waste by offering tailored recipe suggestions based on available ingredients, alongside guidance for more deliberate and controlled grocery shopping.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            </aside>
+        </section>
 
-    <section id="how-it-works">
-        <div class="container">
-            <h2>How It Works</h2>
-            <div class="how-it-works">
-                <div class="feature">
-                    <div class="feature-icon">🛒</div>
-                    <h3>Sync Grocery Apps</h3>
-                    <p>Automatically import shopping lists and purchase history to track ingredients.</p>
+        <section class="shell main-grid">
+            <div class="dashboard">
+                <div class="insight-strip" aria-label="Pantry insights">
+                    <div class="insight">
+                        <span>Total items</span>
+                        <b id="statItems">0</b>
+                        <small>Tracked in the pantry</small>
+                    </div>
+                    <div class="insight">
+                        <span>Use soon</span>
+                        <b id="statRisk">0</b>
+                        <small>Expiring in 3 days</small>
+                    </div>
+                    <div class="insight">
+                        <span>Meals ready</span>
+                        <b id="statMeals">0</b>
+                        <small>Suggested from inventory</small>
+                    </div>
+                    <div class="insight">
+                        <span>Grocery gaps</span>
+                        <b id="statGaps">0</b>
+                        <small>Needed for the plan</small>
+                    </div>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">📸</div>
-                    <h3>Capture Food Inventory</h3>
-                    <p>Use image recognition to identify ingredients and quantities.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🤖</div>
-                    <h3>AI-Powered Ingredient Analysis</h3>
-                    <p>Identify potential meal combinations based on current stock.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📋</div>
-                    <h3>Dynamic Meal Planning</h3>
-                    <p>Generate updated meal plans personalized to dietary preferences and available ingredients.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🎁</div>
-                    <h3>Rewards and Incentives</h3>
-                    <p>Encourage sustainable shopping habits and smarter consumption.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="why-now">
-        <div class="container">
-            <h2>Why Now?</h2>
-            <div class="why-now-list">
-                <div class="why-item">
-                    <span class="why-number">1</span>
-                    <span>AI-enabled nutrition breakthroughs</span>
-                </div>
-                <div class="why-item">
-                    <span class="why-number">2</span>
-                    <span>Smart digital recipes</span>
-                </div>
-                <div class="why-item">
-                    <span class="why-number">3</span>
-                    <span>Stringent EU policies on food waste</span>
-                </div>
-                <div class="why-item">
-                    <span class="why-number">4</span>
-                    <span>Strong consumer shift toward healthier nutrition</span>
-                </div>
+                <section class="panel" id="profile" aria-labelledby="profile-title">
+                    <div class="section-title">
+                        <div>
+                            <h2 id="profile-title">Nutrition Profile</h2>
+                            <p>Estimate your daily energy needs and compare meals with your goal.</p>
+                        </div>
+                    </div>
+                    <form class="toolbar" id="profileForm">
+                        <label>
+                            Sex
+                            <select id="profileSex">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </label>
+                        <label>
+                            Age
+                            <input id="profileAge" type="number" min="12" max="100" value="25" required>
+                        </label>
+                        <label>
+                            Height cm
+                            <input id="profileHeight" type="number" min="120" max="230" value="175" required>
+                        </label>
+                        <label>
+                            Weight kg
+                            <input id="profileWeight" type="number" min="35" max="250" step="0.1" value="70" required>
+                        </label>
+                        <label>
+                            Activity
+                            <select id="profileActivity">
+                                <option value="1.2">Sedentary</option>
+                                <option value="1.375">Light</option>
+                                <option value="1.55" selected>Moderate</option>
+                                <option value="1.725">Very active</option>
+                                <option value="1.9">Athlete</option>
+                            </select>
+                        </label>
+                        <label>
+                            Goal
+                            <select id="profileGoal">
+                                <option value="-400">Lose weight</option>
+                                <option value="0" selected>Maintain</option>
+                                <option value="300">Gain muscle</option>
+                            </select>
+                        </label>
+                        <button class="primary-button" type="submit">Calculate</button>
+                    </form>
+                    <div class="nutrition-row" id="targetSummary" aria-live="polite"></div>
+                </section>
+
+                <section class="panel" id="inventory" aria-labelledby="inventory-title">
+                    <div class="section-title">
+                        <div>
+                            <h2 id="inventory-title">Pantry Inventory</h2>
+                            <p>Add ingredients and StayFoodish will prioritize what should be used first.</p>
+                        </div>
+                    </div>
+                    <form class="toolbar" id="ingredientForm">
+                        <label>
+                            Ingredient
+                            <input id="ingredientName" type="text" placeholder="Example: chickpeas" required>
+                        </label>
+                        <label>
+                            Category
+                            <select id="ingredientCategory">
+                                <option value="produce">Produce</option>
+                                <option value="protein">Protein</option>
+                                <option value="dairy">Dairy</option>
+                                <option value="pantry">Pantry</option>
+                            </select>
+                        </label>
+                        <label>
+                            Expiration date
+                            <input id="ingredientExpiry" type="date" required>
+                        </label>
+                        <label>
+                            Kcal
+                            <input id="ingredientCalories" type="number" min="0" max="2000" value="120" required>
+                        </label>
+                        <label>
+                            Protein
+                            <input id="ingredientProtein" type="number" min="0" max="200" step="0.1" value="5" required>
+                        </label>
+                        <label>
+                            Carbs
+                            <input id="ingredientCarbs" type="number" min="0" max="300" step="0.1" value="12" required>
+                        </label>
+                        <label>
+                            Fat
+                            <input id="ingredientFat" type="number" min="0" max="200" step="0.1" value="3" required>
+                        </label>
+                        <button class="primary-button" type="submit">Add item</button>
+                    </form>
+                    <div class="inventory-grid" id="inventoryList" aria-live="polite"></div>
+                </section>
+
+                <section class="panel" id="recipes" aria-labelledby="recipes-title">
+                    <div class="section-title">
+                        <div>
+                            <h2 id="recipes-title">Recipe Suggestions</h2>
+                            <p>Prototype matching based on what is already available.</p>
+                        </div>
+                        <button class="ghost-button" id="generateRecipes" type="button">Refresh ideas</button>
+                    </div>
+                    <div class="recipe-grid" id="recipeList"></div>
+                </section>
             </div>
-        </div>
-    </section>
+
+            <aside class="side-stack" id="plan">
+                <section class="panel" aria-labelledby="plan-title">
+                    <div class="section-title">
+                        <div>
+                            <h2 id="plan-title">Three-Day Meal Plan</h2>
+                            <p>Balanced around urgent ingredients.</p>
+                        </div>
+                    </div>
+                    <div class="plan-list" id="mealPlan"></div>
+                </section>
+
+                <section class="panel" aria-labelledby="shopping-title">
+                    <div class="section-title">
+                        <div>
+                            <h2 id="shopping-title">Smart Shopping List</h2>
+                            <p>Only buy what completes the plan.</p>
+                        </div>
+                    </div>
+                    <div class="shopping-list" id="shoppingList"></div>
+                </section>
+            </aside>
+        </section>
+
+        <section class="shell story" id="about" aria-label="StayFoodish concept">
+            <article class="story-card">
+                <h2>The Problem</h2>
+                <p>
+                    Nutrition information is everywhere, but people still struggle to turn
+                    groceries into balanced meals. At the same time, too much food is bought,
+                    forgotten, and discarded.
+                </p>
+            </article>
+            <article class="story-card">
+                <h2>The Solution</h2>
+                <p>
+                    StayFoodish combines food inventory, nutrition guidance, meal planning,
+                    and zero-waste shopping into one practical assistant.
+                </p>
+            </article>
+            <article class="story-card">
+                <h2>Next Features</h2>
+                <ul>
+                    <li>Receipt and grocery app imports</li>
+                    <li>Camera-based ingredient detection</li>
+                    <li>Dietary profiles and allergy filters</li>
+                    <li>Rewards for reducing waste</li>
+                </ul>
+            </article>
+        </section>
+    </main>
 
     <footer>
-        <div class="container">
-            <p><strong>STAY FOODISH</strong></p>
-            <p>AI-powered personal nutrition & zero-waste food management</p>
-            <p>© 2025 StayFoodish. All rights reserved.</p>
-            <p>Leonardo Andolfi & Rita Randazzo | Antibes, France</p>
+        <div class="shell">
+            <strong>StayFoodish</strong>
+            <span>AI-powered personal nutrition and zero-waste food management.</span>
+            <span>(c) 2026 StayFoodish</span>
         </div>
     </footer>
 
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+        const defaultItems = [
+            { id: 1, name: "Spinach", category: "produce", days: 1, calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4 },
+            { id: 2, name: "Cherry tomatoes", category: "produce", days: 2, calories: 27, protein: 1.3, carbs: 5.8, fat: 0.3 },
+            { id: 3, name: "Greek yogurt", category: "dairy", days: 3, calories: 130, protein: 12, carbs: 6, fat: 5 },
+            { id: 4, name: "Chicken breast", category: "protein", days: 2, calories: 248, protein: 46, carbs: 0, fat: 5.4 },
+            { id: 5, name: "Brown rice", category: "pantry", days: 24, calories: 216, protein: 5, carbs: 45, fat: 1.8 },
+            { id: 6, name: "Chickpeas", category: "protein", days: 16, calories: 269, protein: 14.5, carbs: 45, fat: 4.2 },
+            { id: 7, name: "Carrots", category: "produce", days: 6, calories: 52, protein: 1.2, carbs: 12, fat: 0.3 },
+            { id: 8, name: "Eggs", category: "protein", days: 8, calories: 156, protein: 12.6, carbs: 1.1, fat: 10.6 }
+        ];
 
-        // Show/hide logo in navbar based on scroll
-        const navLogo = document.querySelector('.nav-logo');
-        const header = document.querySelector('header');
-
-        window.addEventListener('scroll', () => {
-            const headerBottom = header.offsetTop + header.offsetHeight;
-            if (window.scrollY > headerBottom) {
-                navLogo.classList.add('visible');
-            } else {
-                navLogo.classList.remove('visible');
+        const recipes = [
+            {
+                name: "Mediterranean recovery bowl",
+                needs: ["Spinach", "Cherry tomatoes", "Greek yogurt", "Brown rice", "Chickpeas"],
+                missing: ["Lemon"],
+                nutritionText: "High fiber, plant protein, calcium",
+                plan: "Dinner"
+            },
+            {
+                name: "Chicken rice skillet",
+                needs: ["Chicken breast", "Brown rice", "Carrots"],
+                missing: ["Onion", "Parsley"],
+                nutritionText: "Lean protein with slow carbs",
+                plan: "Lunch"
+            },
+            {
+                name: "Protein breakfast plate",
+                needs: ["Eggs", "Spinach", "Cherry tomatoes", "Greek yogurt"],
+                missing: ["Whole-grain bread"],
+                nutritionText: "Protein-rich and quick",
+                plan: "Breakfast"
+            },
+            {
+                name: "Carrot chickpea warm salad",
+                needs: ["Carrots", "Chickpeas", "Greek yogurt"],
+                missing: ["Cumin"],
+                nutritionText: "Budget-friendly and low waste",
+                plan: "Lunch"
             }
-        });
+        ];
 
-        // Add scroll animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        const storageKey = "stayfoodish-items";
+        const profileStorageKey = "stayfoodish-profile";
+        let items = loadItems();
+        let profile = loadProfile();
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
+        const form = document.querySelector("#ingredientForm");
+        const profileForm = document.querySelector("#profileForm");
+        const inventoryList = document.querySelector("#inventoryList");
+        const recipeList = document.querySelector("#recipeList");
+        const mealPlan = document.querySelector("#mealPlan");
+        const shoppingList = document.querySelector("#shoppingList");
+        const toast = document.querySelector("#toast");
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const name = document.querySelector("#ingredientName").value.trim();
+            const category = document.querySelector("#ingredientCategory").value;
+            const expiry = document.querySelector("#ingredientExpiry").value;
+            const days = daysUntil(expiry);
+            const calories = Number(document.querySelector("#ingredientCalories").value);
+            const protein = Number(document.querySelector("#ingredientProtein").value);
+            const carbs = Number(document.querySelector("#ingredientCarbs").value);
+            const fat = Number(document.querySelector("#ingredientFat").value);
+
+            if (!name) return;
+
+            items.push({
+                id: Date.now(),
+                name,
+                category,
+                days,
+                expiry,
+                calories,
+                protein,
+                carbs,
+                fat
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.problem-card, .solution-card, .feature').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
+            form.reset();
+            setDefaultExpiry();
+            document.querySelector("#ingredientCalories").value = 120;
+            document.querySelector("#ingredientProtein").value = 5;
+            document.querySelector("#ingredientCarbs").value = 12;
+            document.querySelector("#ingredientFat").value = 3;
+            persist();
+            render();
+            showToast(`${name} added to the pantry.`);
         });
+
+        document.querySelector("#demoReset").addEventListener("click", () => {
+            items = normalizeItems([...defaultItems]);
+            persist();
+            render();
+            showToast("Demo pantry restored.");
+        });
+
+        document.querySelector("#generateRecipes").addEventListener("click", () => {
+            renderRecipes();
+            showToast("Meal ideas refreshed from the current pantry.");
+        });
+
+        profileForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            profile = readProfileForm();
+            localStorage.setItem(profileStorageKey, JSON.stringify(profile));
+            render();
+            showToast("Nutrition targets updated.");
+        });
+
+        function loadItems() {
+            try {
+                const saved = localStorage.getItem(storageKey);
+                const loaded = saved ? JSON.parse(saved) : [...defaultItems];
+                return normalizeItems(loaded);
+            } catch {
+                return normalizeItems([...defaultItems]);
+            }
+        }
+
+        function persist() {
+            localStorage.setItem(storageKey, JSON.stringify(items));
+        }
+
+        function loadProfile() {
+            try {
+                const saved = localStorage.getItem(profileStorageKey);
+                return saved ? JSON.parse(saved) : {
+                    sex: "male",
+                    age: 25,
+                    height: 175,
+                    weight: 70,
+                    activity: 1.55,
+                    goal: 0
+                };
+            } catch {
+                return {
+                    sex: "male",
+                    age: 25,
+                    height: 175,
+                    weight: 70,
+                    activity: 1.55,
+                    goal: 0
+                };
+            }
+        }
+
+        function readProfileForm() {
+            return {
+                sex: document.querySelector("#profileSex").value,
+                age: Number(document.querySelector("#profileAge").value),
+                height: Number(document.querySelector("#profileHeight").value),
+                weight: Number(document.querySelector("#profileWeight").value),
+                activity: Number(document.querySelector("#profileActivity").value),
+                goal: Number(document.querySelector("#profileGoal").value)
+            };
+        }
+
+        function hydrateProfileForm() {
+            document.querySelector("#profileSex").value = profile.sex;
+            document.querySelector("#profileAge").value = profile.age;
+            document.querySelector("#profileHeight").value = profile.height;
+            document.querySelector("#profileWeight").value = profile.weight;
+            document.querySelector("#profileActivity").value = String(profile.activity);
+            document.querySelector("#profileGoal").value = String(profile.goal);
+        }
+
+        function removeItem(id) {
+            const item = items.find((entry) => entry.id === id);
+            items = items.filter((entry) => entry.id !== id);
+            persist();
+            render();
+            if (item) showToast(`${item.name} removed.`);
+        }
+
+        function render() {
+            renderInventory();
+            renderRecipes();
+            renderPlan();
+            renderStats();
+        }
+
+        function renderInventory() {
+            const sorted = [...items]
+                .map(refreshDays)
+                .sort((a, b) => a.days - b.days);
+
+            inventoryList.innerHTML = sorted.map((item) => {
+                const urgent = item.days <= 3;
+                const freshness = item.days < 0 ? "Expired" : urgent ? "Use soon" : `${item.days} days left`;
+                const pillClass = urgent ? "alert" : "good";
+
+                return `
+                    <article class="inventory-item">
+                        <div>
+                            <div class="item-name">
+                                <span class="dot ${item.category}" aria-hidden="true"></span>
+                                <span>${escapeHtml(item.name)}</span>
+                            </div>
+                            <div class="meta">
+                                <span class="pill">${labelForCategory(item.category)}</span>
+                                <span class="pill">Expires ${formatDate(item.expiry)}</span>
+                                <span class="pill ${pillClass}">${freshness}</span>
+                            </div>
+                            <div class="nutrition-row">
+                                <span class="nutrition-chip"><b>${round(item.calories)}</b><span>kcal</span></span>
+                                <span class="nutrition-chip"><b>${round(item.protein)}g</b><span>protein</span></span>
+                                <span class="nutrition-chip"><b>${round(item.carbs)}g</b><span>carbs</span></span>
+                                <span class="nutrition-chip"><b>${round(item.fat)}g</b><span>fat</span></span>
+                            </div>
+                        </div>
+                        <button class="icon-button" type="button" aria-label="Remove ${escapeHtml(item.name)}" onclick="removeItem(${item.id})">x</button>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        function renderRecipes() {
+            const owned = new Set(items.map((item) => item.name.toLowerCase()));
+            const scoredRecipes = recipes
+                .map((recipe) => {
+                    const matched = recipe.needs.filter((need) => owned.has(need.toLowerCase()));
+                    const score = Math.round((matched.length / recipe.needs.length) * 100);
+                    const urgentHits = matched.filter((name) => {
+                    const item = items.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
+                    return item && item.days <= 3;
+                    }).length;
+                    return { ...recipe, matched, score, urgentHits, nutritionTotals: nutritionFor(matched) };
+                })
+                .sort((a, b) => b.urgentHits - a.urgentHits || b.score - a.score);
+
+            recipeList.innerHTML = scoredRecipes.map((recipe) => `
+                <article class="recipe-card">
+                    <header>
+                        <div>
+                            <h3>${recipe.name}</h3>
+                            <p>${recipe.nutritionText}</p>
+                        </div>
+                        <span class="pill ${recipe.score >= 75 ? "good" : ""}">${recipe.score}% match</span>
+                    </header>
+                    <div class="match-meter" aria-label="${recipe.score}% pantry match">
+                        <span style="width: ${recipe.score}%"></span>
+                    </div>
+                    <p><strong>Use:</strong> ${recipe.matched.join(", ") || "Add ingredients to unlock this meal"}</p>
+                    <p><strong>Buy:</strong> ${recipe.missing.join(", ")}</p>
+                    <p><strong>Target fit:</strong> ${mealFitText(recipe.nutritionTotals)}</p>
+                    <div class="nutrition-row">
+                        <span class="nutrition-chip"><b>${round(recipe.nutritionTotals.calories)}</b><span>kcal</span></span>
+                        <span class="nutrition-chip"><b>${round(recipe.nutritionTotals.protein)}g</b><span>protein</span></span>
+                        <span class="nutrition-chip"><b>${round(recipe.nutritionTotals.carbs)}g</b><span>carbs</span></span>
+                        <span class="nutrition-chip"><b>${round(recipe.nutritionTotals.fat)}g</b><span>fat</span></span>
+                    </div>
+                </article>
+            `).join("");
+
+            const best = scoredRecipes[0];
+            document.querySelector("#phoneMeal").textContent = best.name;
+            document.querySelector("#phoneSuggestion").textContent = best.matched.length
+                ? `Use ${best.matched.slice(0, 4).join(", ")} first.`
+                : "Add pantry items to generate a meal.";
+        }
+
+        function renderPlan() {
+            const days = ["Today", "Tomorrow", "Day 3"];
+            const topRecipes = [...recipes].slice(0, 3);
+            mealPlan.innerHTML = topRecipes.map((recipe, index) => `
+                <article class="plan-item">
+                    <small>${days[index]} - ${recipe.plan}</small>
+                    <strong>${recipe.name}</strong>
+                </article>
+            `).join("");
+
+            const gaps = [...new Set(recipes.flatMap((recipe) => recipe.missing))].slice(0, 5);
+            shoppingList.innerHTML = gaps.map((gap) => `
+                <article class="shopping-item">
+                    <div>
+                        <small>Needed</small>
+                        <strong>${gap}</strong>
+                    </div>
+                    <span class="checkbox" aria-hidden="true"></span>
+                </article>
+            `).join("");
+        }
+
+        function renderStats() {
+            items = items.map(refreshDays);
+            const urgent = items.filter((item) => item.days <= 3).length;
+            const categories = new Set(items.map((item) => item.category)).size;
+            const gaps = new Set(recipes.flatMap((recipe) => recipe.missing)).size;
+            const nutritionScore = Math.min(99, 58 + categories * 7 + Math.max(0, 8 - urgent) * 2);
+
+            document.querySelector("#statItems").textContent = items.length;
+            document.querySelector("#statRisk").textContent = urgent;
+            document.querySelector("#statMeals").textContent = recipes.length;
+            document.querySelector("#statGaps").textContent = gaps;
+            document.querySelector("#phoneWaste").textContent = urgent;
+            document.querySelector("#phoneScore").textContent = nutritionScore;
+            document.querySelector("#phoneSavings").textContent = `${(items.length * 0.35).toFixed(1)}kg`;
+            renderTargets();
+        }
+
+        function renderTargets() {
+            const targets = calculateTargets(profile);
+            document.querySelector("#targetSummary").innerHTML = `
+                <span class="nutrition-chip"><b>${round(targets.calories)}</b><span>daily kcal</span></span>
+                <span class="nutrition-chip"><b>${round(targets.protein)}g</b><span>protein</span></span>
+                <span class="nutrition-chip"><b>${round(targets.carbs)}g</b><span>carbs</span></span>
+                <span class="nutrition-chip"><b>${round(targets.fat)}g</b><span>fat</span></span>
+            `;
+        }
+
+        function labelForCategory(category) {
+            return {
+                produce: "Produce",
+                protein: "Protein",
+                dairy: "Dairy",
+                pantry: "Pantry"
+            }[category] || "Other";
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("visible");
+            window.clearTimeout(showToast.timer);
+            showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 2400);
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function normalizeItems(source = items) {
+            const today = startOfToday();
+            const demoLookup = new Map(defaultItems.map((item) => [item.name.toLowerCase(), item]));
+            return source.map((item) => {
+                const demo = demoLookup.get(String(item.name || "").toLowerCase()) || {};
+                const days = Number.isFinite(Number(item.days)) ? Number(item.days) : 5;
+                const expiry = item.expiry || toDateInput(addDays(today, days));
+                return refreshDays({
+                    ...item,
+                    expiry,
+                    calories: Number(item.calories ?? demo.calories ?? 0),
+                    protein: Number(item.protein ?? demo.protein ?? 0),
+                    carbs: Number(item.carbs ?? demo.carbs ?? 0),
+                    fat: Number(item.fat ?? demo.fat ?? 0)
+                });
+            });
+        }
+
+        function refreshDays(item) {
+            return {
+                ...item,
+                days: daysUntil(item.expiry)
+            };
+        }
+
+        function nutritionFor(names) {
+            return names.reduce((totals, name) => {
+                const item = items.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
+                if (!item) return totals;
+                totals.calories += Number(item.calories || 0);
+                totals.protein += Number(item.protein || 0);
+                totals.carbs += Number(item.carbs || 0);
+                totals.fat += Number(item.fat || 0);
+                return totals;
+            }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+        }
+
+        function calculateTargets(data) {
+            const sexOffset = data.sex === "male" ? 5 : -161;
+            const bmr = 10 * data.weight + 6.25 * data.height - 5 * data.age + sexOffset;
+            const calories = Math.max(1200, Math.round(bmr * data.activity + data.goal));
+            const protein = data.goal > 0 ? data.weight * 1.8 : data.goal < 0 ? data.weight * 1.7 : data.weight * 1.5;
+            const fat = (calories * 0.28) / 9;
+            const carbs = Math.max(0, (calories - protein * 4 - fat * 9) / 4);
+            return { calories, protein, carbs, fat };
+        }
+
+        function mealFitText(meal) {
+            const targets = calculateTargets(profile);
+            const mealCalories = targets.calories / 3;
+            if (!meal.calories) return "Add matching ingredients to calculate this meal.";
+            const ratio = meal.calories / mealCalories;
+            if (ratio < 0.75) return "Light meal for your current daily target.";
+            if (ratio > 1.25) return "Large meal compared with your current daily target.";
+            return "Balanced meal for your current daily target.";
+        }
+
+        function daysUntil(value) {
+            const target = new Date(`${value}T00:00:00`);
+            return Math.ceil((target - startOfToday()) / 86400000);
+        }
+
+        function startOfToday() {
+            const date = new Date();
+            date.setHours(0, 0, 0, 0);
+            return date;
+        }
+
+        function addDays(date, days) {
+            const next = new Date(date);
+            next.setDate(next.getDate() + days);
+            return next;
+        }
+
+        function toDateInput(date) {
+            return date.toISOString().slice(0, 10);
+        }
+
+        function formatDate(value) {
+            return new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(new Date(`${value}T00:00:00`));
+        }
+
+        function round(value) {
+            return Math.round(Number(value || 0) * 10) / 10;
+        }
+
+        function setDefaultExpiry() {
+            document.querySelector("#ingredientExpiry").value = toDateInput(addDays(startOfToday(), 5));
+        }
+
+        setDefaultExpiry();
+        hydrateProfileForm();
+        render();
     </script>
 </body>
 </html>
